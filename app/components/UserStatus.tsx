@@ -1,18 +1,18 @@
 "use client"
 
-import { getSession } from '@auth0/nextjs-auth0';
+import { useUser } from '@auth0/nextjs-auth0/client';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 
-const UserStatus = async () => {
-  const session = await getSession();
+const UserStatus = () => {
+  const { user, error, isLoading } = useUser();
 
   return <Box>
    <Grid container spacing={2}>
     {
-      session && session.user &&
+      !isLoading && user &&
         <Grid item spacing={2}>
           <Grid
             container
@@ -21,11 +21,11 @@ const UserStatus = async () => {
             alignItems="center"            
           >
             <Grid item>
-              <Avatar src={session.user.picture} />
+              <Avatar src={user.picture} />
             </Grid>
             <Grid item>
               {
-                session.user.name
+                user.name
               }
             </Grid>
           </Grid>
@@ -33,7 +33,7 @@ const UserStatus = async () => {
       }
       <Grid item>
         {
-          !session && <Button
+          user && <Button
             color="inherit"
             href="/api/auth/login"
           >
@@ -41,7 +41,7 @@ const UserStatus = async () => {
           </Button>
         }
         {
-          (session && session.user) && <Button
+          (!user) && <Button
             color="inherit"
             href="/api/auth/logout"
           >

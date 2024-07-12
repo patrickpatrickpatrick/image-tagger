@@ -9,21 +9,31 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Grid from '@mui/material/Grid';
+import Container from '@mui/material/Container';
 
 import UserStatus from './components/UserStatus';
+import Filter from './components/Filter';
+import ImageGrid from './components/ImageGrid';
+import ImageTagged from './components/ImageTagged';
+import FilterImageGrid from './components/FilterImageGrid';
 
 async function getImages() {
   const res = await fetch(`${process.env.URL}/api/images`);
   return res.json();
 }
 
+async function getTags() {
+  const res = await fetch(`${process.env.URL}/api/tags`);
+  return res.json();
+}
+
 export default async function Home() {
 
-  const imagesData = getImages();
+  const tagsReq = getTags();
 
-  const [images] = await Promise.all([imagesData]);
+  const [tagsData] = await Promise.all([tagsReq]);
 
-  console.log(images)
+  const { tags, images } = tagsData;
 
   return (
     <main>
@@ -36,13 +46,14 @@ export default async function Home() {
             <UserStatus />
           </Toolbar>
         </AppBar>
-        <Grid container>
-          {
-            images.images && images.images.map(image => <Grid item>
-              <img src={`${image.download_url}`} />
-            </Grid>)
-          }
-        </Grid>
+        <Box>
+          <Container>
+            <FilterImageGrid
+              tags={tags}
+              images={images}
+            />
+          </Container>
+        </Box>
       </Box>
     </main>
   );

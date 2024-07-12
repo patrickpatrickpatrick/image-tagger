@@ -3,9 +3,10 @@ import glob from 'globby'
 import path from 'path'
 import { readFile } from 'fs-extra'
 
-// remove it
+const DEFAULT_PAGE_SIZE = 20;
+
 const octokit = new Octokit({
-  auth: process.ENV.GITHUB_ACCESS_TOKEN
+  auth: process.env.GITHUB_ACCESS_TOKEN
 })
 
 const source = await octokit.rest.repos.getContent({
@@ -14,20 +15,41 @@ const source = await octokit.rest.repos.getContent({
   path: "_data/photos.json"
 });
 
-export async function GET() {
+const filterImageByTag = ({ constructedTagString }, tagsQuery) => {
+  let result = false;
+
+  while(tagsQuery.length) {
+    const tag = tagsQuery.pop();
+
+    if (constructedTagString.match(tag)) {
+      result = true;
+      break;
+    }
+  };
+
+  return result;
+}
+
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const page = (searchParams.get('page') - 1) || 0;
+  const tagsQuery = searchParams?.get('tags')?.split(',');
+
   const {
     data: {
-      sha,
       content    
     }
   } = source;
 
   const {
-    tags, homeDisplay
+    tags, images,
   } = JSON.parse((atob(content)));
+
+  let filterImages = tagsQuery ? 
+    images.filter(image => filterImageByTag(image, tagsQuery)) : images
 
   return Response.json({
     tags,
-    homeDisplay,
+    images: filterImages
   })
 }
