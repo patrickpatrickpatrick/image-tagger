@@ -50,6 +50,7 @@ export default function Home() {
                 Image Tagger
               </Typography>
               <Filter
+                userBar={true}
                 tags={tags}
                 filter={filter}
                 setFilter={filter => setFilter(filter)}

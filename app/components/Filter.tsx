@@ -10,10 +10,11 @@ import { createTheme, ThemeProvider } from '@mui/material';
 interface FilterProps {
   tags: string[],
   filter: string[],
-  setFilter: (tags: string[]) => void
+  setFilter: (tags: string[]) => void,
+  userBar?: boolean|null
 }
 
-const theme = createTheme({
+const theme = (userBar: boolean) => createTheme(userBar ? {
   palette: {
     primary: {
       main: "#fff"
@@ -24,7 +25,6 @@ const theme = createTheme({
     }    
   },
   components: {
-    // Name of the component
     MuiAutocomplete: {
       styleOverrides: {
         option: {
@@ -33,9 +33,10 @@ const theme = createTheme({
       }
     }
   },
-});
+}: {});
 
 const Filter = ({
+  userBar,
   tags,
   setFilter,
   filter,
@@ -44,7 +45,7 @@ const Filter = ({
   const filterOptions = (filter || []).map(tag => ({ title: tag, tag }))
   const [value, setValue] = useState<{ title: string, tag: string }[]>(filterOptions);
 
-  return <ThemeProvider theme={theme}>
+  return <ThemeProvider theme={theme(!!userBar)}>
       <Stack spacing={3} sx={{ width: 500 }}>
       {
         tags && <Autocomplete

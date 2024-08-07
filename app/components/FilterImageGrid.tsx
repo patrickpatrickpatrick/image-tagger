@@ -13,23 +13,38 @@ const FilterImageGrid = ({
   images?: TaggedImage[]
 }) => {
   const [filteredImages, setFilteredImages] = useState([]);
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const tagQuery = tags.join(",");
+    setLoading(true);
 
     fetch(`/api/images${tagQuery ? `?tags=${tagQuery}` : ""}`)
     .then((res) => res.json())
     .then(({ images }) => {
       setFilteredImages(images);
+      setLoading(false);
     })
   }, [tags])
 
   return (<>
     <Grid container spacing={2}>
-      <ImageGrid
-        images={filteredImages}
-        tags={tags}
-      />
+      {
+        loading && <p>
+          Loading images...
+        </p>
+      }
+      {
+        !loading && <ImageGrid
+          images={filteredImages}
+          tags={tags}
+        />
+      }
+      {
+        !loading && !filteredImages.length && <p>
+          No images found!
+        </p>
+      }
     </Grid>
   </>)
 }

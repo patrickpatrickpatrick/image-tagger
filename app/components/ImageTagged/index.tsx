@@ -80,8 +80,8 @@ const ImageTagged = ({
       {
         editable && <Filter
           tags={allTags}
-          tagFilters={tempTags}
-          setTagFilters={setTempTags}
+          filter={tempTags}
+          setFilter={setTempTags}
         />
       }
       {
