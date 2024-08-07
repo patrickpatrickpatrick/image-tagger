@@ -23,15 +23,15 @@ const filterImageByTag = (constructedTagString: string, tagsQuery: string[]) => 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
   const tagsQuery = searchParams?.get('tags')?.split(',').filter(x => x.length > 0) || [];
-  const source = await octokit.rest.repos.getContent({
+
+  let content;
+
+  const { data } = await octokit.rest.repos.getContent({
     owner: "patrickpatrickpatrick",
     repo: "sam-site",
     path: "_data/photos.json"
   });
 
-  let content;
-
-  const { data } = await octokit.repos.getContent();
   if (!Array.isArray(data)) { // Filter out directories
     if (data.type === 'file') { // Make sure it's a file
       content = data.content;

@@ -8,32 +8,23 @@ import { TaggedImage } from '../constants/types';
 
 const FilterImageGrid = ({
   tags,
-  images,
 }: {
   tags: string[],
   images?: TaggedImage[]
 }) => {
   const [filteredImages, setFilteredImages] = useState([]);
-  const [tagFilters, setTagFilters] = useState<string[]>([]);
-  const tagQuery = tagFilters.join(",");
 
   useEffect(() => {
+    const tagQuery = tags.join(",");
+
     fetch(`/api/images${tagQuery ? `?tags=${tagQuery}` : ""}`)
     .then((res) => res.json())
     .then(({ images }) => {
-      console.log(images)
       setFilteredImages(images);
     })
-  }, [tagQuery])
+  }, [tags])
 
   return (<>
-    <Grid>
-      <Filter
-        setTagFilters={input => setTagFilters(input)}
-        tagFilters={tagFilters}
-        tags={tags}
-      />
-    </Grid>
     <Grid container spacing={2}>
       <ImageGrid
         images={filteredImages}
