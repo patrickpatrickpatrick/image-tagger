@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useUser } from '@auth0/nextjs-auth0/client';
 import Avatar from '@mui/material/Avatar';
@@ -21,7 +21,7 @@ const UserStatus = () => {
             alignItems="center"            
           >
             <Grid item>
-              <Avatar src={user.picture} />
+              <Avatar src={user.picture || ""} />
             </Grid>
             <Grid item>
               {

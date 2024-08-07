@@ -15,6 +15,7 @@
     "@mui/icons-material": "^5.16.0",
     "@mui/material": "^5.16.0",
     "@octokit/rest": "^21.0.0",
+    "@octokit/types": "^13.5.0",
     "fs-extra": "^11.2.0",
     "globby": "^14.0.2",
     "next": "14.2.5",

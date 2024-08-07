@@ -1,37 +1,46 @@
-"use client";
+'use client'
 
 import Grid from '@mui/material/Grid';
 import Filter from './Filter';
 import ImageGrid from './ImageGrid';
 import { useState, useEffect } from 'react';
+import { TaggedImage } from '../constants/types';
 
 const FilterImageGrid = ({
   tags,
-  imageTags,
   images,
+}: {
+  tags: string[],
+  images?: TaggedImage[]
 }) => {
-  const [filteredImages, setFilteredImages] = useState(images);
-  const [tagFilters, setTagFilters] = useState([]);
+  const [filteredImages, setFilteredImages] = useState([]);
+  const [tagFilters, setTagFilters] = useState<string[]>([]);
   const tagQuery = tagFilters.join(",");
 
   useEffect(() => {
-    if (tagQuery.length) {
-      fetch(`/api/tags?tags=${tagQuery}`)
-      .then((res) => res.json())
-      .then(({ images }) => {
-        setFilteredImages(images);
-      })      
-    }
-  }, [tagFilters])
+    fetch(`/api/images${tagQuery ? `?tags=${tagQuery}` : ""}`)
+    .then((res) => res.json())
+    .then(({ images }) => {
+      console.log(images)
+      setFilteredImages(images);
+    })
+  }, [tagQuery])
 
   return (<>
     <Grid>
-      <Filter setTagFilters={setTagFilters} tagFilters={tagFilters} tags={tags} />
+      <Filter
+        setTagFilters={input => setTagFilters(input)}
+        tagFilters={tagFilters}
+        tags={tags}
+      />
     </Grid>
     <Grid container spacing={2}>
-      <ImageGrid images={filteredImages} />
+      <ImageGrid
+        images={filteredImages}
+        tags={tags}
+      />
     </Grid>
   </>)
-} 
+}
 
 export default FilterImageGrid;
